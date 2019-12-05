@@ -33,6 +33,7 @@ export default class MultiSlider extends React.Component {
     customMarker: DefaultMarker,
     customMarkerLeft: DefaultMarker,
     customMarkerRight: DefaultMarker,
+    customLabelEnabled: false,
     customLabel: DefaultLabel,
     markerOffsetX: 0,
     markerOffsetY: 0,
@@ -512,13 +513,13 @@ export default class MultiSlider extends React.Component {
     const leftDiff = (Dimensions.get('window').width - this.props.sliderLength) / 2;
     return (
       <View>
-        <Label
+        { this.props.customLabelEnabled ? <Label
           leftDiff={leftDiff}
           oneMarkerValue={this.state.valueOne}
           twoMarkerValue={this.state.valueTwo}
           oneMarkerLeftPosition={positionOne}
           twoMarkerLeftPosition={positionTwo}
-        />
+        /> : undefined }
         {this.props.imageBackgroundSource && 
           <ImageBackground source={this.props.imageBackgroundSource} style={[{width: '100%', height: '100%'}, containerStyle]}>
             {body}
