@@ -17,10 +17,10 @@ import { createArray, valueToPosition, positionToValue } from './converters';
 export default class MultiSlider extends React.Component {
   static defaultProps = {
     values: [0],
-    onValuesChangeStart: () => {},
-    onValuesChange: values => {},
-    onValuesChangeFinish: values => {},
-    onMarkersPosition: values => {},
+    onValuesChangeStart: () => { },
+    onValuesChange: values => { },
+    onValuesChangeFinish: values => { },
+    onMarkersPosition: values => { },
     step: 1,
     min: 0,
     max: 10,
@@ -86,7 +86,7 @@ export default class MultiSlider extends React.Component {
         onShouldBlockNativeResponder: (evt, gestureState) => true,
       });
     };
-    
+
     this._panResponderBetween = customPanResponder(
       (gestureState) => {
         this.startOne(gestureState);
@@ -159,7 +159,7 @@ export default class MultiSlider extends React.Component {
       this.setState(nextState);
 
       if (typeof nextState.positionOne !== 'undefined' && typeof nextState.positionTwo !== 'undefined') {
-          this.props.onMarkersPosition([nextState.positionOne, nextState.positionTwo]);
+        this.props.onMarkersPosition([nextState.positionOne, nextState.positionTwo]);
       }
     }
   }
@@ -199,9 +199,9 @@ export default class MultiSlider extends React.Component {
       : accumDistance + this.state.pastOne;
     var bottom = 0;
     var trueTop =
-        this.state.positionTwo - (this.props.allowOverlap ? 0 : this.props.minMarkerOverlapDistance > 0
-            ? this.props.minMarkerOverlapDistance
-            : this.stepLength);
+      this.state.positionTwo - (this.props.allowOverlap ? 0 : this.props.minMarkerOverlapDistance > 0
+        ? this.props.minMarkerOverlapDistance
+        : this.stepLength);
     var top = trueTop === 0 ? 0 : trueTop || this.props.sliderLength;
     var confined =
       unconfined < bottom ? bottom : unconfined > top ? top : unconfined;
@@ -261,9 +261,9 @@ export default class MultiSlider extends React.Component {
       : accumDistance + this.state.pastTwo;
     var bottom =
       this.state.positionOne + (this.props.allowOverlap ? 0
-          : this.props.minMarkerOverlapDistance > 0
-              ? this.props.minMarkerOverlapDistance
-              : this.stepLength);
+        : this.props.minMarkerOverlapDistance > 0
+          ? this.props.minMarkerOverlapDistance
+          : this.stepLength);
     var top = this.props.sliderLength;
     var confined =
       unconfined < bottom ? bottom : unconfined > top ? top : unconfined;
@@ -403,6 +403,8 @@ export default class MultiSlider extends React.Component {
 
     const body = (<React.Fragment>
       <View style={[styles.fullTrack, { width: sliderLength }]}>
+        <View style={{ flexDirection: "row", alignItems: "center" }}>
+          <View style={[styles.bubbleStyle, { marginRight: -10 }]} />
           <View
             style={[
               styles.track,
@@ -430,31 +432,35 @@ export default class MultiSlider extends React.Component {
               ]}
             />
           )}
+          <View style={[styles.bubbleStyle, { marginLeft: -10 }]} />
+        </View>
+
+
+        <View
+          style={[
+            styles.markerContainer,
+            markerContainerOne,
+            this.props.markerContainerStyle,
+            positionOne > sliderLength / 2 && styles.topMarkerContainer,
+          ]}
+        >
           <View
-            style={[
-              styles.markerContainer,
-              markerContainerOne,
-              this.props.markerContainerStyle,
-              positionOne > sliderLength / 2 && styles.topMarkerContainer,
-            ]}
+            style={[styles.touch, touchStyle]}
+            ref={component => (this._markerOne = component)}
+            {...this._panResponderOne.panHandlers}
           >
-            <View
-              style={[styles.touch, touchStyle]}
-              ref={component => (this._markerOne = component)}
-              {...this._panResponderOne.panHandlers}
-            >
-              {isMarkersSeparated === false ? (
-                <Marker
-                  enabled={this.props.enabledOne}
-                  pressed={this.state.onePressed}
-                  markerStyle={this.props.markerStyle}
-                  pressedMarkerStyle={this.props.pressedMarkerStyle}
-                  disabledMarkerStyle={this.props.disabledMarkerStyle}
-                  currentValue={this.state.valueOne}
-                  valuePrefix={this.props.valuePrefix}
-                  valueSuffix={this.props.valueSuffix}
-                />
-              ) : (
+            {isMarkersSeparated === false ? (
+              <Marker
+                enabled={this.props.enabledOne}
+                pressed={this.state.onePressed}
+                markerStyle={this.props.markerStyle}
+                pressedMarkerStyle={this.props.pressedMarkerStyle}
+                disabledMarkerStyle={this.props.disabledMarkerStyle}
+                currentValue={this.state.valueOne}
+                valuePrefix={this.props.valuePrefix}
+                valueSuffix={this.props.valueSuffix}
+              />
+            ) : (
                 <MarkerLeft
                   enabled={this.props.enabledOne}
                   pressed={this.state.onePressed}
@@ -466,34 +472,34 @@ export default class MultiSlider extends React.Component {
                   valueSuffix={this.props.valueSuffix}
                 />
               )}
-            </View>
           </View>
-          {twoMarkers &&
-            positionOne !== this.props.sliderLength && (
+        </View>
+        {twoMarkers &&
+          positionOne !== this.props.sliderLength && (
+            <View
+              style={[
+                styles.markerContainer,
+                markerContainerTwo,
+                this.props.markerContainerStyle,
+              ]}
+            >
               <View
-                style={[
-                  styles.markerContainer,
-                  markerContainerTwo,
-                  this.props.markerContainerStyle,
-                ]}
+                style={[styles.touch, touchStyle]}
+                ref={component => (this._markerTwo = component)}
+                {...this._panResponderTwo.panHandlers}
               >
-                <View
-                  style={[styles.touch, touchStyle]}
-                  ref={component => (this._markerTwo = component)}
-                  {...this._panResponderTwo.panHandlers}
-                >
-                  {isMarkersSeparated === false ? (
-                    <Marker
-                      pressed={this.state.twoPressed}
-                      markerStyle={this.props.markerStyle}
-                      pressedMarkerStyle={this.props.pressedMarkerStyle}
-                      disabledMarkerStyle={this.props.disabledMarkerStyle}
-                      currentValue={this.state.valueTwo}
-                      enabled={this.props.enabledTwo}
-                      valuePrefix={this.props.valuePrefix}
-                      valueSuffix={this.props.valueSuffix}
-                    />
-                  ) : (
+                {isMarkersSeparated === false ? (
+                  <Marker
+                    pressed={this.state.twoPressed}
+                    markerStyle={this.props.markerStyle}
+                    pressedMarkerStyle={this.props.pressedMarkerStyle}
+                    disabledMarkerStyle={this.props.disabledMarkerStyle}
+                    currentValue={this.state.valueTwo}
+                    enabled={this.props.enabledTwo}
+                    valuePrefix={this.props.valuePrefix}
+                    valueSuffix={this.props.valueSuffix}
+                  />
+                ) : (
                     <MarkerRight
                       pressed={this.state.twoPressed}
                       markerStyle={this.props.markerStyle}
@@ -505,23 +511,23 @@ export default class MultiSlider extends React.Component {
                       valueSuffix={this.props.valueSuffix}
                     />
                   )}
-                </View>
               </View>
-            )}
-          </View>
+            </View>
+          )}
+      </View>
     </React.Fragment>);
     const leftDiff = (Dimensions.get('window').width - this.props.sliderLength) / 2;
     return (
       <View>
-        { this.props.customLabelEnabled ? <Label
+        {this.props.customLabelEnabled ? <Label
           leftDiff={leftDiff}
           oneMarkerValue={this.state.valueOne}
           twoMarkerValue={this.state.valueTwo}
           oneMarkerLeftPosition={positionOne}
           twoMarkerLeftPosition={positionTwo}
-        /> : undefined }
-        {this.props.imageBackgroundSource && 
-          <ImageBackground source={this.props.imageBackgroundSource} style={[{width: '100%', height: '100%'}, containerStyle]}>
+        /> : undefined}
+        {this.props.imageBackgroundSource &&
+          <ImageBackground source={this.props.imageBackgroundSource} style={[{ width: '100%', height: '100%' }, containerStyle]}>
             {body}
           </ImageBackground>
         }
@@ -544,6 +550,28 @@ const styles = StyleSheet.create({
   fullTrack: {
     flexDirection: 'row',
   },
+  bubbleStyle: {
+    ...Platform.select({
+      ios: {
+        height: 10,
+        width: 10,
+        borderRadius: 5,
+        backgroundColor: '#A7A7A7',
+      },
+      android: {
+        height: 10,
+        width: 10,
+        borderRadius: 5,
+        backgroundColor: '#CECECE',
+      },
+      web: {
+        height: 10,
+        width: 10,
+        borderRadius: 5,
+        backgroundColor: '#A7A7A7',
+      }
+    }),
+  },
   track: {
     ...Platform.select({
       ios: {
@@ -555,7 +583,7 @@ const styles = StyleSheet.create({
         height: 2,
         backgroundColor: '#CECECE',
       },
-      web:{
+      web: {
         height: 2,
         borderRadius: 2,
         backgroundColor: '#A7A7A7',
@@ -570,7 +598,7 @@ const styles = StyleSheet.create({
       android: {
         backgroundColor: '#0D8675',
       },
-      web:{
+      web: {
         backgroundColor: '#095FFF',
       }
     }),
