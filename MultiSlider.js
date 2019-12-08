@@ -21,6 +21,7 @@ export default class MultiSlider extends React.Component {
     onValuesChange: values => { },
     onValuesChangeFinish: values => { },
     onMarkersPosition: values => { },
+    scaleValues: [],
     step: 1,
     min: 0,
     max: 10,
@@ -352,6 +353,7 @@ export default class MultiSlider extends React.Component {
       sliderLength,
       markerOffsetX,
       markerOffsetY,
+      scaleValues,
     } = this.props;
     const twoMarkers = this.props.values.length == 2; // when allowOverlap, positionTwo could be 0, identified as string '0' and throwing 'RawText 0 needs to be wrapped in <Text>' error
 
@@ -403,38 +405,52 @@ export default class MultiSlider extends React.Component {
 
     const body = (<React.Fragment>
       <View style={[styles.fullTrack, { width: sliderLength }]}>
-        <View style={{ flexDirection: "row", alignItems: "center" }}>
-          <View style={[styles.bubbleStyle, { marginRight: -10 }]} />
+        <View
+          style={[
+            styles.track,
+            this.props.trackStyle,
+            trackOneStyle,
+            { width: trackOneLength },
+          ]}
+        />
+        <View
+          style={[
+            styles.track,
+            this.props.trackStyle,
+            trackTwoStyle,
+            { width: trackTwoLength },
+          ]}
+          {...(twoMarkers ? this._panResponderBetween.panHandlers : {})}
+        />
+        {twoMarkers && (
           <View
             style={[
               styles.track,
               this.props.trackStyle,
-              trackOneStyle,
-              { width: trackOneLength },
+              trackThreeStyle,
+              { width: trackThreeLength },
             ]}
           />
-          <View
-            style={[
-              styles.track,
-              this.props.trackStyle,
-              trackTwoStyle,
-              { width: trackTwoLength },
-            ]}
-            {...(twoMarkers ? this._panResponderBetween.panHandlers : {})}
-          />
-          {twoMarkers && (
-            <View
-              style={[
-                styles.track,
-                this.props.trackStyle,
-                trackThreeStyle,
-                { width: trackThreeLength },
-              ]}
-            />
-          )}
-          <View style={[styles.bubbleStyle, { marginLeft: -10 }]} />
-        </View>
+        )}
 
+        <View style={{
+          position: "absolute",
+          flexDirection: "row",
+          top: 0, bottom: 0,
+          alignItems: "center",
+          zIndex: -1
+        }}>
+          {scaleValues.map((value, index) => {
+            let margin = 0
+            let isWithinSelection = valueToPosition(value,scaleValues, this.props.sliderLength) > positionOne && valueToPosition(value, scaleValues, this.props.sliderLength) < positionTwo
+            if (index === 0) {
+              margin = valueToPosition(value, scaleValues, this.props.sliderLength) - (styles.bubbleStyle.width/2)
+            } else {
+              margin = valueToPosition(value, scaleValues, this.props.sliderLength) - valueToPosition(scaleValues[index - 1], scaleValues, this.props.sliderLength) - (styles.bubbleStyle.width)
+            }
+            return <View style={[styles.bubbleStyle, isWithinSelection ? {backgroundColor: "red"} : {},{ marginLeft: margin }]} />
+          })}
+        </View>
 
         <View
           style={[
