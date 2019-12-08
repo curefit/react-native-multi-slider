@@ -90,20 +90,20 @@ const styles = StyleSheet.create({
   unSelectedScaleStyle: {
     ...Platform.select({
       ios: {
-        height: 10,
-        width: 10,
+        height: 8,
+        width: 8,
         borderRadius: 5,
         backgroundColor: '#A7A7A7',
       },
       android: {
-        height: 10,
-        width: 10,
+        height: 8,
+        width: 8,
         borderRadius: 5,
         backgroundColor: '#CECECE',
       },
       web: {
-        height: 10,
-        width: 10,
+        height: 8,
+        width: 8,
         borderRadius: 5,
         backgroundColor: '#A7A7A7',
       }
