@@ -13,6 +13,7 @@ import {
 import DefaultMarker from './DefaultMarker';
 import DefaultLabel from './DefaultLabel';
 import { createArray, valueToPosition, positionToValue } from './converters';
+import DefaultScale from './DefaultScale';
 
 export default class MultiSlider extends React.Component {
   static defaultProps = {
@@ -34,6 +35,7 @@ export default class MultiSlider extends React.Component {
     customMarker: DefaultMarker,
     customMarkerLeft: DefaultMarker,
     customMarkerRight: DefaultMarker,
+    customScaleEnabled: false,
     customLabelEnabled: false,
     customLabel: DefaultLabel,
     markerOffsetX: 0,
@@ -433,24 +435,17 @@ export default class MultiSlider extends React.Component {
           />
         )}
 
-        <View style={{
-          position: "absolute",
-          flexDirection: "row",
-          top: 0, bottom: 0,
-          alignItems: "center",
-          zIndex: -1
-        }}>
-          {scaleValues.map((value, index) => {
-            let margin = 0
-            let isWithinSelection = valueToPosition(value,scaleValues, this.props.sliderLength) > positionOne && valueToPosition(value, scaleValues, this.props.sliderLength) < positionTwo
-            if (index === 0) {
-              margin = valueToPosition(value, scaleValues, this.props.sliderLength) - (styles.bubbleStyle.width/2)
-            } else {
-              margin = valueToPosition(value, scaleValues, this.props.sliderLength) - valueToPosition(scaleValues[index - 1], scaleValues, this.props.sliderLength) - (styles.bubbleStyle.width)
-            }
-            return <View style={[styles.bubbleStyle, isWithinSelection ? {backgroundColor: "red"} : {},{ marginLeft: margin }]} />
-          })}
-        </View>
+        {this.props.customScaleEnabled ?
+          <View style={styles.scaleContainer}>
+            <DefaultScale
+              selectedScaleStyle={this.props.selectedScaleStyle}
+              unSelectedScaleStyle={this.props.unSelectedScaleStyle}
+              scaleValues={scaleValues}
+              sliderLength={this.props.sliderLength}
+              oneMarkerLeftPosition={positionOne}
+              twoMarkerLeftPosition={positionTwo}
+            />
+          </View> : undefined}
 
         <View
           style={[
@@ -566,28 +561,6 @@ const styles = StyleSheet.create({
   fullTrack: {
     flexDirection: 'row',
   },
-  bubbleStyle: {
-    ...Platform.select({
-      ios: {
-        height: 10,
-        width: 10,
-        borderRadius: 5,
-        backgroundColor: '#A7A7A7',
-      },
-      android: {
-        height: 10,
-        width: 10,
-        borderRadius: 5,
-        backgroundColor: '#CECECE',
-      },
-      web: {
-        height: 10,
-        width: 10,
-        borderRadius: 5,
-        backgroundColor: '#A7A7A7',
-      }
-    }),
-  },
   track: {
     ...Platform.select({
       ios: {
@@ -636,4 +609,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'stretch',
   },
+  scaleContainer: {
+    position: "absolute",
+    flexDirection: "row",
+    top: 0,
+    bottom: 0,
+    alignItems: "center",
+    zIndex: -1
+  }
 });
