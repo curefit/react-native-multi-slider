@@ -438,6 +438,7 @@ export default class MultiSlider extends React.Component {
         {this.props.customScaleEnabled ?
           <View style={styles.scaleContainer}>
             <DefaultScale
+              scaleTextStyle={this.props.scaleTextStyle}
               selectedScaleStyle={this.props.selectedScaleStyle}
               unSelectedScaleStyle={this.props.unSelectedScaleStyle}
               scaleValues={scaleValues}

@@ -8,6 +8,7 @@ const ViewPropTypes = require('react-native').ViewPropTypes || ViewPropTypes;
 
 export default class DefaultScale extends React.Component {
   static propTypes = {
+    scaleTextStyle: ViewPropTypes.style,
     selectedScaleStyle: ViewPropTypes.style,
     unSelectedScaleStyle: ViewPropTypes.style,
     scaleValues: PropTypes.array,
@@ -19,11 +20,13 @@ export default class DefaultScale extends React.Component {
   static defaultProps = {
     scaleValues: [],
     selectedScaleStyle: {},
-    unSelectedScaleStyle: {}
+    unSelectedScaleStyle: {},
+    scaleTextStyle: {}
   };
 
   render() {
     const {
+      scaleTextStyle,
       selectedScaleStyle,
       unSelectedScaleStyle,
       scaleValues,
@@ -32,6 +35,7 @@ export default class DefaultScale extends React.Component {
       sliderLength
     } = this.props;
 
+    const _scaleTextStyle = {...styles.scaleTextStyle, ...scaleTextStyle}
     const _unSelectedScaleStyle = { ...styles.unSelectedScaleStyle, ...unSelectedScaleStyle }
     const _selectedScaleStyle = { ...styles.unSelectedScaleStyle, ...styles.selectedScaleStyle, ...selectedScaleStyle }
 
@@ -46,9 +50,28 @@ export default class DefaultScale extends React.Component {
           } else {
             margin = valueToPosition(value, scaleValues, sliderLength) - valueToPosition(scaleValues[index - 1], scaleValues, sliderLength) - (_unSelectedScaleStyle.width)
           }
-          return <View
-            key={index + ""}
-            style={[_unSelectedScaleStyle, isWithinSelection ? _selectedScaleStyle : {}, { marginLeft: margin }]} />
+
+          return (
+            <View style={{ width: _unSelectedScaleStyle.width + margin, alignItems: "flex-end" }}>
+              <View
+                key={index + ""}
+                style={[_unSelectedScaleStyle, isWithinSelection ? _selectedScaleStyle : {},]} />
+              <View style={{
+                position: "absolute",
+                left: 0,
+                right: 0,
+                alignItems: "flex-end",
+                top: 20
+              }}>
+                <Text numberOfLines={1}
+                  style={_scaleTextStyle}>{value}</Text>
+              </View>
+            </View>)
+
+          // return <View
+          //   key={index + ""}
+          //   style={[_unSelectedScaleStyle, isWithinSelection ? _selectedScaleStyle : {}, { marginLeft: margin }]} />
+
         })}
       </View>
     );
@@ -59,6 +82,10 @@ const styles = StyleSheet.create({
   container: {
     flexDirection: "row",
     alignItems: "center",
+  },
+  scaleTextStyle: {
+    fontSize: 10,
+    opacity: 0.8
   },
   unSelectedScaleStyle: {
     ...Platform.select({
