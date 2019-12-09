@@ -35,7 +35,7 @@ export default class DefaultScale extends React.Component {
       sliderLength
     } = this.props;
 
-    const _scaleTextStyle = {...styles.scaleTextStyle, ...scaleTextStyle}
+    const _scaleTextStyle = { ...styles.scaleTextStyle, ...scaleTextStyle }
     const _unSelectedScaleStyle = { ...styles.unSelectedScaleStyle, ...unSelectedScaleStyle }
     const _selectedScaleStyle = { ...styles.unSelectedScaleStyle, ...styles.selectedScaleStyle, ...selectedScaleStyle }
 
@@ -52,9 +52,10 @@ export default class DefaultScale extends React.Component {
           }
 
           return (
-            <View style={{ width: _unSelectedScaleStyle.width + margin, alignItems: "flex-end" }}>
+            <View
+              key={index + ""}
+              style={{ width: _unSelectedScaleStyle.width + margin, alignItems: "flex-end" }}>
               <View
-                key={index + ""}
                 style={[_unSelectedScaleStyle, isWithinSelection ? _selectedScaleStyle : {},]} />
               <View style={{
                 position: "absolute",
